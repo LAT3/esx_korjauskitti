@@ -21,6 +21,7 @@ AddEventHandler('esx_korjauskitti:moottori', function()
 				local health = GetVehicleEngineHealth(vehicle)
 				
 				if health < 700 then
+					TriggerServerEvent('esx_korjauskitti:poistakitti')
 					TaskStartScenarioInPlace(pelaaja, 'PROP_HUMAN_BUM_BIN', 0, true)
 					ESX.ShowNotification('Näyttää aika pahalta. Etköhän jonkun patentin kuitenkin keksi...')
 					Citizen.Wait(Config.Moottoripatentti)
@@ -28,13 +29,17 @@ AddEventHandler('esx_korjauskitti:moottori', function()
 					ClearPedTasksImmediately(pelaaja)
 					ESX.ShowNotification('Moottori toimii nyt jotenkuten. Kannattaa varmaan kuitenkin ajaa suoraan mekaanikolle...')
 					
-				else
+
+				elseif health > 700 then
+					TriggerServerEvent('esx_korjauskitti:poistakitti')
 					TaskStartScenarioInPlace(pelaaja, 'PROP_HUMAN_BUM_BIN', 0, true)
-					ESX.ShowNotification('Onneksi moottorin vika on pieni.Osaat sen varmaankin korjata...')
+					ESX.ShowNotification('Onneksi moottorin vika on pieni. Osaat sen varmaankin korjata...')
 					Citizen.Wait(Config.Moottorikuntoon)
 					SetVehicleEngineHealth(vehicle, 1000.0)
 					ClearPedTasksImmediately(pelaaja)
 					ESX.ShowNotification('Onnistuit! Moottori on nyt täysin kunnossa.')
+				else
+					ESX.ShowNotification('Älä yritä käyttää kittiä kahdesti! Mene mekaanikolle')
 				end
 			end)
 		end
